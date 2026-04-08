@@ -1,8 +1,8 @@
 Desafio 1
-A implementação baseia-se em uma estrutura de Fila Padrão (FIFO), onde o gerenciamento é feito por dois ponteiros estratégicos: inicio e fim. O ponteiro fim permite que a operação de enqueue ocorra com custo constante, conectando o novo nó ao último elemento sem percorrer toda a lista. No momento do atendimento (dequeue), o ponteiro inicio avança para o próximo nó, liberando a memória do cliente atendido. O cálculo do tempo de espera é realizado através de uma variável acumuladora que soma o tempoAtendimento de cada cliente processado, refletindo a latência acumulada para o próximo da fila.
+O código baseia-se em uma estrutura de Fila Padrão (FIFO), onde o gerenciamento é feito por dois ponteiros estratégicos: inicio e fim. O ponteiro fim permite que a operação de enqueue ocorra com custo constante, conectando o novo nó ao último elemento sem percorrer toda a lista. No momento do atendimento, o ponteiro inicio avança para o próximo nó, liberando a memória do cliente atendido. O cálculo do tempo de espera é realizado através de uma variável acumuladora que soma o tempoAtendimento de cada cliente processado, refletindo a latência acumulada para o próximo da fila.
 
 Desafio 2
-Diferente da fila convencional, este desafio utiliza uma Inserção Ordenada. Em vez de simplesmente adicionar ao final, a função enqueuePrioridade percorre a lista encadeada para encontrar a posição exata do novo documento baseada no campo prioridade.
+Diferente da fila convencional, este código utiliza uma Inserção Ordenada. Em vez de simplesmente adicionar ao final, a função enqueuePrioridade percorre a lista encadeada para encontrar a posição exata do novo documento baseada no campo prioridade.
 
 Critério de Prioridade: O algoritmo compara os valores inteiros, tratando números menores como precedentes.
 
