@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct {
+    int id;
+    int numPaginas;
+    int prioridade;
+} Documento;
+
+typedef struct No {
+    Documento dado;
+    struct No* prox;
+} NoPri;
+
+typedef struct {
+    NoPri* inicio;
+} FilaPrioridade;
+
+void inicializar(FilaPrioridade* f) {
+    f->inicio = NULL;
+}
+
+bool isEmpty(FilaPrioridade* f) {
+    return f->inicio == NULL;
+}
+
+void enqueuePrioridade(FilaPrioridade* f, Documento doc) {
+    NoPri* novo = (NoPri*)malloc(sizeof(NoPri));
+    if (novo == NULL) {
+        printf("Erro de alocacao de memoria.\n");
+        exit(1);
+    }
+    novo->dado = doc;
+    novo->prox = NULL;
+
+    if (isEmpty(f) || doc.prioridade < f->inicio->dado.prioridade) {
+        novo->prox = f->inicio;
+        f->inicio = novo;
+    } else {
+        NoPri* atual = f->inicio;
+        
+        while (atual->prox != NULL && atual->prox->dado.prioridade <= doc.prioridade) {
+            atual = atual->prox;
+        }
+        
+        novo->prox = atual->prox;
+        atual->prox = novo;
+    }
+}
+
+Documento dequeue(FilaPrioridade* f) {
+    if (isEmpty(f)) {
+        printf("Fila de impressao vazia!\n");
+        Documento vazio = {-1, -1, -1};
+        return vazio;
+    }
+    
+    NoPri* temp = f->inicio;
+    Documento doc = temp->dado;
+    
+    f->inicio = f->inicio->prox;
+    free(temp);
+    
+    return doc;
+}
+
+int main() {
+    FilaPrioridade fila;
+    inicializar(&fila);
+    
+    int opcao = -1;
+    
+    printf("--- Sistema de Impressao ---\n");
+    while (opcao != 0) {
+        printf("\n[1] Inserir Documento\n[2] Imprimir (Atender)\n[0] Sair\nEscolha: ");
+        scanf("%d", &opcao);
+        
+        if (opcao == 1) {
+            Documento doc;
+            
+            printf("Digite o ID do documento: ");
+            scanf("%d", &doc.id);
+            
+            printf("Digite o numero de paginas: ");
+            scanf("%d", &doc.numPaginas);
+            
+            printf("Digite a prioridade (ex: 1 para urgente, 10 para normal): ");
+            scanf("%d", &doc.prioridade);
+            
+            enqueuePrioridade(&fila, doc);
+            printf("\nDocumento %d adicionado com sucesso!\n", doc.id);
+            
+        } else if (opcao == 2) {
+            if (isEmpty(&fila)) {
+                printf("\nNenhum documento na fila de impressao.\n");
+            } else {
+                Documento doc = dequeue(&fila);
+                printf("\n--- STATUS DE IMPRESSAO ---\n");
+                printf("ID: %d | Paginas: %d | Prioridade: %d\n", 
+                       doc.id, doc.numPaginas, doc.prioridade);
+            }
+        }
+    }
+    
+    while (!isEmpty(&fila)) {
+        dequeue(&fila);
+    }
+    
+    return 0;
+}
