@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct {
+    int id;
+    int tempoAtendimento;
+} Cliente;
+
+typedef struct No {
+    Cliente dado;
+    struct No* prox;
+} No;
+
+typedef struct {
+    No* inicio;
+    No* fim;
+} Fila;
+
+void inicializar(Fila* f) {
+    f->inicio = NULL;
+    f->fim = NULL;
+}
+
+bool isEmpty(Fila* f) {
+    return f->inicio == NULL;
+}
+
+void enqueue(Fila* f, Cliente c) {
+    No* novo = (No*)malloc(sizeof(No));
+    if (novo == NULL) {
+        printf("Erro de alocacao de memoria.\n");
+        exit(1);
+    }
+    novo->dado = c;
+    novo->prox = NULL;
+
+    if (isEmpty(f)) {
+        f->inicio = novo;
+    } else {
+        f->fim->prox = novo; 
+    }
+    f->fim = novo; 
+}
+
+Cliente dequeue(Fila* f) {
+    if (isEmpty(f)) {
+        printf("Fila vazia!\n");
+        Cliente vazio = {-1, -1};
+        return vazio;
+    }
+    
+    No* temp = f->inicio;
+    Cliente c = temp->dado;
+    
+    f->inicio = f->inicio->prox; 
+    
+    if (f->inicio == NULL) {
+        f->fim = NULL;
+    }
+    
+    free(temp);
+    return c;
+}
+
+int main() {
+    Fila f;
+    inicializar(&f);
+    
+    int n;
+    printf("Digite o numero de clientes: ");
+    scanf("%d", &n);
+    
+    for (int i = 0; i < n; i++) {
+        Cliente c;
+        printf("\n--- Cliente %d ---\n", i + 1);
+        
+        printf("Digite o ID do cliente: ");
+        scanf("%d", &c.id);
+        
+        printf("Digite o tempo de atendimento (min): ");
+        scanf("%d", &c.tempoAtendimento);
+        
+        enqueue(&f, c);
+    }
+    
+    printf("\n--- Inicio do Atendimento ---\n");
+    int tempoEsperaTotal = 0;
+
+    while (!isEmpty(&f)) {
+        Cliente c = dequeue(&f);
+        
+        printf("Cliente ID: %d atendido. Tempo de espera: %d minutos.\n", c.id, tempoEsperaTotal);
+        
+        tempoEsperaTotal += c.tempoAtendimento;
+    }
+    
+    return 0;
+}
